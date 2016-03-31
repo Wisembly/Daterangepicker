@@ -172,8 +172,8 @@
 
             // Binding
             this.$el.on('rangeUpdate', selectors.calendar, $.proxy(this.config.onRangeChange, this));
-            // this.$el.on('mouseover.disabledDates', selectors.calendar, $.proxy(this.config.onHoverDisabledDate, this));
-            // this.$el.on('leave.disabledDates', selectors.calendar, $.proxy(this.config.onLeaveDisabledDate, this));
+            // this.$el.on('mouseover.disabledDates', 'td', $.proxy(this.config.onHoverDisabledDate, this));
+            // this.$el.on('mouseleave.disabledDates', selectors.calendar, $.proxy(this.config.onLeaveDisabledDate, this));
 
             return this;
         },
@@ -205,6 +205,7 @@
                 }
                 var closestDisabledDays = _.filter(this.config.disabledDays, fct);
                 if(closestDisabledDays.length) {
+                    closestDisabledDays = _.sortBy(closestDisabledDays, function(current) { return current.start.getTime() });
                     max = moment(closestDisabledDays[0].start).subtract(1, 'days').toDate();
                 }
             }
@@ -260,13 +261,13 @@
                 if ($(ev.target).parent().hasClass('is-disabled') && !$(ev.target).parent().hasClass('is-past')) {
                     if (this.hasAlreadyLeave) {
                         this.hasAlreadyLeave = false;
-                        $(selectors.calendar).trigger('hover.disabledDates');
+                        $(selectors.calendar).trigger('mouseover.disabledDates');
                     }
                 // Problem on is-disabled -> they have pointer-events: none;
                 //      -> no reset when leave on disabled days
                 } else if(!this.hasAlreadyLeave) {
                     this.hasAlreadyLeave = true;
-                    $(selectors.calendar).trigger('leave.disabledDates');
+                    $(selectors.calendar).trigger('mouseleave.disabledDates');
                 }
             }
 
