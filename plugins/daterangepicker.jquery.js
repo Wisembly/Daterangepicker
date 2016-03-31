@@ -172,9 +172,6 @@
 
             // Binding
             this.$el.on('rangeUpdate', selectors.calendar, $.proxy(this.config.onRangeChange, this));
-            // this.$el.on('mouseover.disabledDates', 'td', $.proxy(this.config.onHoverDisabledDate, this));
-            // this.$el.on('mouseleave.disabledDates', selectors.calendar, $.proxy(this.config.onLeaveDisabledDate, this));
-
             return this;
         },
 
@@ -256,21 +253,6 @@
         },
 
         _onMouseOverCalendar: function (ev) {
-            // Manage hover disabled dates
-            if ($(ev.target).hasClass('pika-day')) {
-                if ($(ev.target).parent().hasClass('is-disabled') && !$(ev.target).parent().hasClass('is-past')) {
-                    if (this.hasAlreadyLeave) {
-                        this.hasAlreadyLeave = false;
-                        $(selectors.calendar).trigger('mouseover.disabledDates');
-                    }
-                // Problem on is-disabled -> they have pointer-events: none;
-                //      -> no reset when leave on disabled days
-                } else if(!this.hasAlreadyLeave) {
-                    this.hasAlreadyLeave = true;
-                    $(selectors.calendar).trigger('mouseleave.disabledDates');
-                }
-            }
-
             // Update on hover the end range date
             if (!this.end && this.start && $(ev.target).hasClass('pika-day')) {
                 var target = ev.target,
