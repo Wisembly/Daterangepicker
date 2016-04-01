@@ -21,21 +21,20 @@
 }(this, function ($, _, moment, Pikaday) {
     'use strict';
 
-    function getInitRange (inputFrom, inputTo) {
-        // initial state: range setup in markup
-        var initRange = {
-            start: $(inputFrom).val(),
-            end: $(inputTo).val()
-        }
-        // Options
-        if (initRange.start && initRange.end) {
-            return initRange;
+    function getInitRange (options) {
+        var start = $(options.inputFrom).val(),
+            end = $(options.inputTo).val();
+        if (start && end) {
+            return {
+                start: new Date(start),
+                end: moment(new Date(end)).startOf('day').toDate()
+            };
         }
     }
 
     function updateMarkup(options) {
-        $(options.field).append('<input type="hidden" name="'+ options.output.from +'" value="">');
-        $(options.field).append('<input type="hidden" name="'+ options.output.to +'" value="">');
+        var outputFrom = $(options.field).append('<input type="hidden" name="'+ options.output.from +'" value="">'),
+            outputTo = $(options.field).append('<input type="hidden" name="'+ options.output.to +'" value="">');
         $(options.inputFrom).removeAttr('name');
         $(options.inputTo).removeAttr('name');
     }
@@ -54,7 +53,6 @@
             inputTo = $(selectors.to, element).get(0);
 
         var options = $.extend({}, options, {
-            initRange: getInitRange(inputFrom, inputTo),
             container: $(selectors.calendar, element).get(0),
             inputFrom: inputFrom,
             inputTo: inputTo,
@@ -66,6 +64,8 @@
 
         this.el = element.get(0);
         this.$el = element;
+
+        options.initRange = getInitRange(options);
 
         // Update Markup
         updateMarkup(options);
@@ -164,10 +164,10 @@
 
             // Set an initial range
             if (this.config.initRange) {
-                this.start = moment(this.config.initRange.start).toDate();
-                this.end = moment(this.config.initRange.end).toDate();
-                this.pikaday.setStartRange(this.start);
-                this.pikaday.setEndRange(this.end);
+                this.pikaday.setDate(moment(this.config.initRange.start).toDate());
+                this.pikaday.setEndRange(moment(this.config.initRange.end).toDate());
+                this.pikaday.setDate(moment(this.config.initRange.end).toDate());
+                this.pikaday.draw();
             }
 
             // Binding
