@@ -87,13 +87,12 @@
         inputFrom: document.getElementById('from'),
         inputTo: document.getElementById('to'),
         container: document.getElementById('calendar'),
-        limitDate: null,
+        maxDate: null,
         maxRangeDuration: null,
         allowDisabledDateInRange: false,
         getEndRangeMaxfct: null,
         disabledBeforeToday: false,
-        disabledBefore: new Date(2016, 0, 1),
-        // minDate: new Date(2016, 0, 1),
+        minDate: new Date(2016, 0, 1),
         showWeekNumber: false
     };
 
@@ -119,9 +118,9 @@
                 field: this.config.inputFrom,
                 container: this.config.container,
                 format: this.config.format,
-                maxDate: this.config.limitDate,
+                maxDate: this.config.maxDate,
+                minDate: this.config.minDate,
                 disabledBeforeToday: this.config.disabledBeforeToday,
-                minDate: this.config.disabledBefore,
                 showWeekNumber: this.config.showWeekNumber
             }));
 
@@ -207,7 +206,7 @@
                 }
             }
 
-            max = (max && moment(max).isAfter(this.config.limitDate))?this.config.limitDate:max;
+            max = (max && moment(max).isAfter(this.config.maxDate))?this.config.maxDate:max;
             // Added constrains
             max = (this.config.getEndRangeMaxfct)? this.config.getEndRangeMaxfct(max): max;
             return max;
