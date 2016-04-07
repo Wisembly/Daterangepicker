@@ -1022,13 +1022,11 @@
                     isPast =     (opts.minDate && day < opts.minDate)           ||
                                  (opts.maxDate && day > opts.maxDate)           ||
                                  (opts.disableWeekends && isWeekend(day))       ||
-                                //  (opts.disableDayFn && opts.disableDayFn(day))  ||
                                  (opts.disabledBeforeToday && day.getTime() < now.getTime()),
 
                     isDisabled = opts.disableDayFn && opts.disableDayFn(day),
                     isAfterMax = opts.maxRange && day > opts.maxRange,
                     isBeforeStartRange = opts.startRange && day < opts.startRange,
-                    //isSelected = isDate(this._d) ? compareDates(day, this._d) : false,
                     isSelected = !isBeforeStartRange && !isAfterMax && (isDate(this._d) ? compareDates(day, this._d) : false);
 
                 if (isEmpty) {
@@ -1054,7 +1052,7 @@
                         isEmpty: isEmpty,
                         isStartRange: isStartRange,
                         isEndRange: isEndRange,
-                        isInRange: isInRange,
+                        isInRange: isInRange && !isSelected,
                         showDaysInNextAndPreviousMonths: opts.showDaysInNextAndPreviousMonths,
                         isAfterMax: isAfterMax,
                         // Only when end date is not selected
@@ -1112,6 +1110,12 @@
                     this._o.onClose.call(this);
                 }
             }
+        },
+
+        removeEvents: function () {
+            removeEvent(this.el, 'mousedown', this._onMouseDown, true);
+            removeEvent(this.el, 'touchend', this._onMouseDown, true);
+            removeEvent(this.el, 'change', this._onChange);
         },
 
         /**
