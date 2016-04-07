@@ -13,7 +13,7 @@
         factory(require('jquery'), require('underscore'), require('moment'), require('../pikaday'));
     } else if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['jquery', 'underscore', 'moment', 'pikaday'], factory);
+        define(['jquery', 'underscore', 'moment', '../pikaday'], factory);
     } else {
         // Browser globals
         factory(root.jQuery, root._, root.moment, root.Pikaday);
