@@ -73,7 +73,6 @@
         // use by _onMouseOverCalendar to trigger disabledDates on hover
         this.hasAlreadyLeave = true;
 
-        // this.$el.on('mouseover.calendar', selectors.calendar, $.proxy(this._onMouseOverCalendar, this));
         $(options.container).on('mouseover', $.proxy(this._onMouseOverCalendar, this));
         $(options.container).on('mouseleave', $.proxy(this._onMouseLeaveCalendar, this));
         $(options.container).on('rangeUpdate', $.proxy(this._onRangeUpdate, this));
@@ -93,7 +92,8 @@
         getEndRangeMaxfct: null,
         disabledBeforeToday: false,
         minDate: new Date(2016, 0, 1),
-        showWeekNumber: false
+        showWeekNumber: false,
+        readOnly: false
     };
 
     var defaultsPikaday = {
@@ -171,7 +171,47 @@
 
             // Binding
             this.$el.on('rangeUpdate', selectors.calendar, $.proxy(this.config.onRangeChange, this));
+
+            if (this.config.readOnly) {
+                this.setupReadOnlyConfig();
+            }
             return this;
+        },
+
+        setupReadOnlyConfig: function () {
+            var self = this,
+                now = moment().endOf('day').toDate();
+
+            $(this.config.container).off('mouseleave', $.proxy(this._onMouseLeaveCalendar, this));
+            // if now >= maxDate -> no changes possible
+            if (now > this.end || now.getTime() === this.end.getTime()) {
+                // destroy all events binding
+                this.pikaday.removeEvents();
+                $(this.config.container).off('mouseover', $.proxy(this._onMouseOverCalendar, this));
+            } else {
+                $(this.config.container).on('mouseleave', $.proxy(function (date) {
+                    this.pikaday.setEndRange(moment(this.end).startOf('day').toDate());
+                    this.pikaday.draw();
+                }, this));
+                // Set the calendar state: start readOnly && looking for the end
+                this.currentMax = this.getEndRangeMax(this.start);
+                this.pikaday.setMaxRange(this.currentMax);
+                this.pikaday.config({
+                    field: this.config.inputTo,
+                    onSelect: function (date) {
+                        var tmp = self.start < now ? now: self.start;
+                        if (!moment(date).isAfter(self.currentMax) && !moment(date).isBefore(tmp)) {
+                            self.pikaday.setEndRange(date);
+                            self.end = moment(date).endOf('day').toDate();
+                            $(self.pikaday.el).trigger('rangeUpdate', [{
+                                start: self.start,
+                                end: self.end
+                            }]);
+                        }
+                        self.pikaday.draw();
+                    }
+                });
+            }
         },
 
         // Apply 2 constrains: maxRangeDuration && allowDisabledDateInRange
@@ -253,7 +293,7 @@
 
         _onMouseOverCalendar: function (ev) {
             // Update on hover the end range date
-            if (!this.end && this.start && $(ev.target).hasClass('pika-day')) {
+            if ((this.config.readOnly || !this.end && this.start) && $(ev.target).hasClass('pika-day')) {
                 var target = ev.target,
                     _d = new Date(  target.getAttribute('data-pika-year'),
                                     target.getAttribute('data-pika-month'),
@@ -290,8 +330,7 @@
 
             this.reset();
             this.pikaday.draw();
-        },
-
+        }
     };
 
     $.fn.daterangepicker = function(options) {
