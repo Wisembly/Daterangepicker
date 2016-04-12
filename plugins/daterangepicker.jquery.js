@@ -152,7 +152,7 @@
                     }
 
                     // First date range selection
-                    if (!self.start) {
+                    if (!self.start || date < self.start) {
                         self.currentMax = self.getEndRangeMax(date);
 
                         // If max = start day => the end date is by default = start date
@@ -194,12 +194,13 @@
                     _d = new Date(  target.getAttribute('data-pika-year'),
                                     target.getAttribute('data-pika-month'),
                                     target.getAttribute('data-pika-day'));
-                    if (this.currentMax && _d > this.currentMax)
-                        return;
-                    if (!this.end && _d < this.start)
-                        return;
-                    if (this.config.lockStartRange && _d < this.start)
-                        return;
+
+                if (this.currentMax && _d > this.currentMax ||
+                    this.config.lockStartRange && _d < this.start)
+                    return;
+
+                var input = (!this.config.lockStartRange && (this.end || _d < this.start)) ? 'inputFrom': 'inputTo';
+                this.pikaday.config({ field: this.config[input] });
             }
             this.pikaday._onMouseDown(ev);
         },
@@ -265,6 +266,11 @@
         },
 
         setOneDayRange: function(day) {
+            if (!this.config.lockStartRange) {
+                this.currentMax = null;
+                this.pikaday.setMaxRange();
+            }
+
             this.pikaday.setStartRange();
             $(this.config.inputTo).val(moment(day).format(this.config.format));
 
