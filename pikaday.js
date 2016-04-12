@@ -59,21 +59,21 @@
         }
     },
 
-    fireEvent = function(el, eventName, data)
-    {
-        var ev;
-
-        if (document.createEvent) {
-            ev = document.createEvent('HTMLEvents');
-            ev.initEvent(eventName, true, false);
-            ev = extend(ev, data);
-            el.dispatchEvent(ev);
-        } else if (document.createEventObject) {
-            ev = document.createEventObject();
-            ev = extend(ev, data);
-            el.fireEvent('on' + eventName, ev);
-        }
-    },
+    // fireEvent = function(el, eventName, data)
+    // {
+    //     var ev;
+    //
+    //     if (document.createEvent) {
+    //         ev = document.createEvent('HTMLEvents');
+    //         ev.initEvent(eventName, true, false);
+    //         ev = extend(ev, data);
+    //         el.dispatchEvent(ev);
+    //     } else if (document.createEventObject) {
+    //         ev = document.createEventObject();
+    //         ev = extend(ev, data);
+    //         el.fireEvent('on' + eventName, ev);
+    //     }
+    // },
 
     trim = function(str)
     {
@@ -724,7 +724,7 @@
 
                 if (this._o.field) {
                     this._o.field.value = '';
-                    fireEvent(this._o.field, 'change', { firedBy: this });
+                    // fireEvent(this._o.field, 'change', { firedBy: this });
                 }
 
                 return this.draw();
@@ -751,7 +751,7 @@
             this.gotoDate(this._d);
             if (this._o.field) {
                 this._o.field.value = this.toString();
-                fireEvent(this._o.field, 'change', { firedBy: this });
+                // fireEvent(this._o.field, 'change', { firedBy: this });
             }
             if (!preventOnSelect && typeof this._o.onSelect === 'function') {
                 this._o.onSelect.call(this, this.getDate());
