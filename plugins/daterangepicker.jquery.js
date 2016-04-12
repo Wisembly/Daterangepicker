@@ -76,7 +76,9 @@
         $(options.container).on('mouseover', $.proxy(this._onMouseOverCalendar, this));
         $(options.container).on('mouseleave', $.proxy(this._onMouseLeaveCalendar, this));
         $(options.container).on('rangeUpdate', $.proxy(this._onRangeUpdate, this));
-        $(options.inputFrom).on('click', $.proxy(this._onInputClick, this));
+        if (!options.lockStartRange) {
+            $(options.inputFrom).on('click', $.proxy(this._onInputClick, this));
+        }
 
         this.init(options);
     }
