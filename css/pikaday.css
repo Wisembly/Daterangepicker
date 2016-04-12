@@ -231,13 +231,13 @@ http://nicolasgallagher.com/micro-clearfix-hack/
 	background: #E25C5B;
 }
 
-.is-afterMax .pika-button {
-    cursor: default;
+.is-afterMax .pika-button:hover {
+    background: #E25C5B;
 }
 
-.is-beforeStart .pika-button {
+/*.is-beforeStart .pika-button {
     cursor: default;
-}
+}*/
 
 /***************************/
 

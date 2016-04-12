@@ -93,7 +93,7 @@
         disabledBeforeToday: false,
         minDate: new Date(2016, 0, 1),
         showWeekNumber: false,
-        readOnly: false
+        lockStartRange: false
     };
 
     var defaultsPikaday = {
@@ -135,7 +135,17 @@
                 },
 
                 onSelect: function(date) {
-                    if (self.end) {
+                    if (self.end && self.config.lockStartRange) {
+                        if (date > self.start || date.getTime() === self.start.getTime()) {
+                            this.setEndRange(date);
+                        }
+                        this.draw();
+                        $(this.el).trigger('rangeUpdate', [{
+                            start: self.start,
+                            end: self.end
+                        }]);
+                        return;
+                    } else if (self.end) {
                         self.reset();
                     }
 
@@ -147,7 +157,7 @@
                         if (self.currentMax && moment(date).format('YYYYMMDD') === moment(self.currentMax).format('YYYYMMDD')) {
                             self.setOneDayRange(date);
                         } else {
-                            self.setStartRange(date);
+                            self.setStartRange(date, self.getEndRangeMax(date));
                         }
                     }
                     // Second date range selection:
@@ -157,7 +167,7 @@
                     } else {
                         return;
                     }
-                    self.pikaday.draw();
+                    this.draw();
                 }
             });
 
@@ -171,47 +181,23 @@
 
             // Binding
             this.$el.on('rangeUpdate', selectors.calendar, $.proxy(this.config.onRangeChange, this));
+            $(this.pikaday.el).on('mousedown', $.proxy(this._onMouseDown, this));
 
-            if (this.config.readOnly) {
-                this.setupReadOnlyConfig();
-            }
             return this;
         },
 
-        setupReadOnlyConfig: function () {
-            var self = this,
-                now = moment().endOf('day').toDate();
-
-            $(this.config.container).off('mouseleave', $.proxy(this._onMouseLeaveCalendar, this));
-            // if now >= maxDate -> no changes possible
-            if (now > this.end || now.getTime() === this.end.getTime()) {
-                // destroy all events binding
-                this.pikaday.removeEvents();
-                $(this.config.container).off('mouseover', $.proxy(this._onMouseOverCalendar, this));
-            } else {
-                $(this.config.container).on('mouseleave', $.proxy(function (date) {
-                    this.pikaday.setEndRange(moment(this.end).startOf('day').toDate());
-                    this.pikaday.draw();
-                }, this));
-                // Set the calendar state: start readOnly && looking for the end
-                this.currentMax = this.getEndRangeMax(this.start);
-                this.pikaday.setMaxRange(this.currentMax);
-                this.pikaday.config({
-                    field: this.config.inputTo,
-                    onSelect: function (date) {
-                        var tmp = self.start < now ? now: self.start;
-                        if (!moment(date).isAfter(self.currentMax) && !moment(date).isBefore(tmp)) {
-                            self.pikaday.setEndRange(date);
-                            self.end = moment(date).endOf('day').toDate();
-                            $(self.pikaday.el).trigger('rangeUpdate', [{
-                                start: self.start,
-                                end: self.end
-                            }]);
-                        }
-                        self.pikaday.draw();
-                    }
-                });
+        _onMouseDown: function (ev) {
+            if ($(ev.target).hasClass('pika-day') && this.start) {
+                var target = ev.target,
+                    _d = new Date(  target.getAttribute('data-pika-year'),
+                                    target.getAttribute('data-pika-month'),
+                                    target.getAttribute('data-pika-day'));
+                    if (this.currentMax && _d > this.currentMax)
+                        return;
+                    if (this.config.lockStartRange && _d < this.start)
+                        return;
             }
+            this.pikaday._onMouseDown(ev);
         },
 
         // Apply 2 constrains: maxRangeDuration && allowDisabledDateInRange
@@ -252,18 +238,21 @@
             return max;
         },
 
-        setStartRange: function(date) {
+        setStartRange: function(date, maxDate) {
             this.start = moment(date).startOf('day').toDate();
             this.pikaday.setStartRange(date);
-            this.pikaday.setMaxRange(this.currentMax);
+            this.pikaday.setMaxRange(maxDate);
             this.pikaday.config({field: this.config.inputTo});
         },
 
         setEndRange: function (date) {
             this.end = moment(date).endOf('day').toDate();
-            this.currentMax = null;
-            this.pikaday.setMaxRange();
-            this.pikaday.config({field: this.config.inputFrom});
+            if (!this.config.lockStartRange) {
+                this.currentMax = null;
+                this.pikaday.setMaxRange();
+            }
+            var input = this.config.lockStartRange?'inputTo':'inputFrom';
+            this.pikaday.config({ field: this.config[input] });
 
             $(this.pikaday.el).trigger('rangeUpdate', [{
                 start: this.start,
@@ -293,7 +282,7 @@
 
         _onMouseOverCalendar: function (ev) {
             // Update on hover the end range date
-            if ((this.config.readOnly || !this.end && this.start) && $(ev.target).hasClass('pika-day')) {
+            if (!this.end && this.start && $(ev.target).hasClass('pika-day')) {
                 var target = ev.target,
                     _d = new Date(  target.getAttribute('data-pika-year'),
                                     target.getAttribute('data-pika-month'),
