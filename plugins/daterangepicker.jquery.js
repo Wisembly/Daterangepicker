@@ -194,6 +194,8 @@
                                     target.getAttribute('data-pika-day'));
                     if (this.currentMax && _d > this.currentMax)
                         return;
+                    if (!this.end && _d < this.start)
+                        return;
                     if (this.config.lockStartRange && _d < this.start)
                         return;
             }
