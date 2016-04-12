@@ -440,9 +440,7 @@
                 if (hasClass(target, 'pika-button') &&
                     !hasClass(target, 'is-empty') &&
                     !hasClass(target.parentNode, 'is-past') &&
-                    !hasClass(target.parentNode, 'is-disabled') &&
-                    !hasClass(target.parentNode, 'is-afterMax') &&
-                    !hasClass(target.parentNode, 'is-beforeStart')
+                    !hasClass(target.parentNode, 'is-disabled')
                 ) {
                     self.setDate(new Date(target.getAttribute('data-pika-year'), target.getAttribute('data-pika-month'), target.getAttribute('data-pika-day')));
                     if (opts.bound) {
@@ -568,8 +566,8 @@
         self.el = document.createElement('div');
         self.el.className = 'pika-single' + (opts.isRTL ? ' is-rtl' : '') + (opts.theme ? ' ' + opts.theme : '');
 
-        addEvent(self.el, 'mousedown', self._onMouseDown, true);
-        addEvent(self.el, 'touchend', self._onMouseDown, true);
+        // addEvent(self.el, 'mousedown', self._onMouseDown, true);
+        // addEvent(self.el, 'touchend', self._onMouseDown, true);
         addEvent(self.el, 'change', self._onChange);
 
         if (opts.field) {
@@ -1024,10 +1022,10 @@
                                  (opts.disableWeekends && isWeekend(day))       ||
                                  (opts.disabledBeforeToday && day.getTime() < now.getTime()),
 
-                    isDisabled = opts.disableDayFn && opts.disableDayFn(day),
-                    isAfterMax = opts.maxRange && day > opts.maxRange,
+                    isDisabled         = opts.disableDayFn && opts.disableDayFn(day),
+                    isAfterMax         = opts.maxRange   && day > opts.maxRange,
                     isBeforeStartRange = opts.startRange && day < opts.startRange,
-                    isSelected = !isBeforeStartRange && !isAfterMax && (isDate(this._d) ? compareDates(day, this._d) : false);
+                    isSelected         = !isBeforeStartRange && !isAfterMax && (isDate(this._d) ? compareDates(day, this._d) : false);
 
                 if (isEmpty) {
                     if (i < before) {
@@ -1055,8 +1053,7 @@
                         isInRange: isInRange && !isSelected,
                         showDaysInNextAndPreviousMonths: opts.showDaysInNextAndPreviousMonths,
                         isAfterMax: isAfterMax,
-                        // Only when end date is not selected
-                        isBeforeStartRange: isBeforeStartRange && !opts.endRange
+                        isBeforeStartRange: isBeforeStartRange
                     };
 
                 row.push(renderDay(dayConfig));
