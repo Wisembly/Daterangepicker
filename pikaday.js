@@ -290,6 +290,12 @@
         }
         if (opts.isDisabled) {
             arr.push('is-disabled');
+            if (opts.isDisabledStartRange) {
+                arr.push('is-disabled-startrange');
+            }
+            if (opts.isDisabledEndRange) {
+                arr.push('is-disabled-endrange');
+            }
         }if (opts.isPast) {
             arr.push('is-past');
         }
@@ -1022,10 +1028,12 @@
                                  (opts.disableWeekends && isWeekend(day))       ||
                                  (opts.disabledBeforeToday && day.getTime() < now.getTime()),
 
-                    isDisabled         = opts.disableDayFn && opts.disableDayFn(day),
-                    isAfterMax         = opts.maxRange   && day > opts.maxRange,
-                    isBeforeStartRange = opts.startRange && day < opts.startRange,
-                    isSelected         = !isBeforeStartRange && !isAfterMax && (isDate(this._d) ? compareDates(day, this._d) : false);
+                    isDisabled              = opts.disableDayFn && opts.disableDayFn(day),
+                    isDisabledStartRange    = !isPast && isDisabled && opts.isDisabledStartEndRangeFn && opts.isDisabledStartEndRangeFn(day, 'start'),
+                    isDisabledEndRange      = !isPast && isDisabled && opts.isDisabledStartEndRangeFn && opts.isDisabledStartEndRangeFn(day, 'end'),
+                    isAfterMax              = opts.maxRange   && day > opts.maxRange,
+                    isBeforeStartRange      = opts.startRange && day < opts.startRange,
+                    isSelected              = !isBeforeStartRange && !isAfterMax && (isDate(this._d) ? compareDates(day, this._d) : false);
 
                 if (isEmpty) {
                     if (i < before) {
@@ -1046,6 +1054,8 @@
                         isSelected: isSelected,
                         isToday: isToday,
                         isDisabled: isDisabled,
+                        isDisabledStartRange: isDisabledStartRange,
+                        isDisabledEndRange: isDisabledEndRange,
                         isPast: isPast,
                         isEmpty: isEmpty,
                         isStartRange: isStartRange,

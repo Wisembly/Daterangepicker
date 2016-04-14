@@ -136,6 +136,13 @@
                     });
                 },
 
+                isDisabledStartEndRangeFn: function (date, type) {
+                    date =  moment(date).format('YYYYMMDD');
+                    return _.some(self.config.disabledDays, function(current) {
+                        return date === moment(current[type]).format('YYYYMMDD');
+                    });
+                },
+
                 onSelect: function(date) {
                     if (self.end && self.config.lockStartRange) {
                         if (date > self.start || date.getTime() === self.start.getTime()) {
