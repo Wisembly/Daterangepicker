@@ -305,7 +305,7 @@
                                     target.getAttribute('data-pika-month'),
                                     target.getAttribute('data-pika-day'));
 
-                if (this.currentDate.getTime() !== _d.getTime() && !$(ev.target).parent().hasClass('is-beforeStart')) {
+                if (this.currentDate.getTime() !== _d.getTime()) {
                     this.currentDate = _d;
                     var endRange;
                     if (this.currentDate.getTime() >= this.start.getTime()) {
