@@ -1028,7 +1028,7 @@
                                  (opts.disableWeekends && isWeekend(day))       ||
                                  (opts.disabledBeforeToday && day.getTime() < now.getTime()),
 
-                    isDisabled              = opts.disableDayFn && opts.disableDayFn(day),
+                    isDisabled              = !isPast && opts.disableDayFn && opts.disableDayFn(day),
                     isDisabledStartRange    = !isPast && isDisabled && opts.isDisabledStartEndRangeFn && opts.isDisabledStartEndRangeFn(day, 'start'),
                     isDisabledEndRange      = !isPast && isDisabled && opts.isDisabledStartEndRangeFn && opts.isDisabledStartEndRangeFn(day, 'end'),
                     isAfterMax              = opts.maxRange   && day > opts.maxRange,
