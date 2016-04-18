@@ -37,7 +37,7 @@
           { start: new Date('2016-03-16'), end: new Date('2016-03-17') },
           { start: new Date('2016-03-28'), end: new Date('2016-03-30') },
           { start: new Date('2016-04-01'), end: new Date('2016-04-05') },
-          { start: new Date('2016-04-20'), end: new Date('2016-04-20') }
+          { start: new Date('2016-04-17'), end: new Date('2016-04-20') }
       ];
 
     $('#datepicker_container').daterangepicker({
@@ -45,33 +45,7 @@
 
       disabledDays: disabledRanges,
       maxRangeDuration: undefined,
-
       disabledBeforeToday: true,
-
-      // Last date of the contract -> PAS EN MOMENT !!!!!!!!
-      disabledBefore: new Date(2016,3,12),
-      // minDate: new Date(2016,3,14),
-      // showWeekNumber: true,
-
-      // onDisabledDateOver: function (date, status) {
-      //   console.log('Over');
-      // },
-      //
-      onDisabledDateLeave: function (date, status) {
-        console.log('Leave');
-      },
-
-      // initRange: {
-      //   start: '2016-04-07',
-      //   end: '2016-04-11'
-      // },
-
-      // allowDisabledDateInRange: true,
-
-      // getEndRangeMaxfct: function(currentMax) {
-      //   var endContract = moment('2016-04-18');
-      //   return currentMax.isAfter(endContract)?endContract:currentMax;
-      // },
 
       onRangeChange: function (ev, date) {
         console.log('Date range', moment(date.start).format('YYYY-MM-DD'), moment(date.end).format('YYYY-MM-DD'));
