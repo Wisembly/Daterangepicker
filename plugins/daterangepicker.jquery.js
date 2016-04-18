@@ -95,7 +95,8 @@
         disabledBeforeToday: false,
         minDate: new Date(2016, 0, 1),
         showWeekNumber: false,
-        lockStartRange: false
+        lockStartRange: false,
+        toISOString: false
     };
 
     var defaultsPikaday = {
@@ -325,8 +326,10 @@
         },
 
         _onRangeUpdate: function (ev) {
-            $('[name=' + this.config.output.from + ']').val(moment(this.start).format());
-            $('[name=' + this.config.output.to + ']').val(moment(this.end).format());
+            var startMoment = moment(this.start),
+                endMoment = moment(this.end);
+            $('[name=' + this.config.output.from + ']').val(this.config.toISOString ? startMoment.toISOString() : startMoment.format());
+            $('[name=' + this.config.output.to + ']').val(this.config.toISOString ? endMoment.toISOString() : endMoment.format());
         },
 
         _onInputClick: function(ev) {
