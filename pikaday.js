@@ -1032,7 +1032,7 @@
                     isDisabledStartRange    = isDisabled && opts.isDisabledStartEndRangeFn && opts.isDisabledStartEndRangeFn(day, 'start'),
                     isDisabledEndRange      = isDisabled && opts.isDisabledStartEndRangeFn && opts.isDisabledStartEndRangeFn(day, 'end'),
                     isAfterMax              = opts.maxRange   && day > opts.maxRange,
-                    isBeforeStartRange      = opts.startRange && day < opts.startRange,
+                    isBeforeStartRange      = opts.lockStartRange && opts.startRange && day < opts.startRange,
                     isSelected              = !isBeforeStartRange && !isAfterMax && (isDate(this._d) ? compareDates(day, this._d) : false);
 
                 if (isEmpty) {

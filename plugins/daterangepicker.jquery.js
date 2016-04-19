@@ -124,7 +124,8 @@
                 maxDate: this.config.maxDate,
                 minDate: this.config.minDate,
                 disabledBeforeToday: this.config.disabledBeforeToday,
-                showWeekNumber: this.config.showWeekNumber
+                showWeekNumber: this.config.showWeekNumber,
+                lockStartRange: this.config.lockStartRange
             }));
 
             this.pikaday.config({
@@ -191,6 +192,9 @@
 
             // Binding
             this.$el.on('rangeUpdate', selectors.calendar, $.proxy(this.config.onRangeChange, this));
+            this.$el.on('startUpdate', selectors.calendar, $.proxy(this.config.onStartChange, this));
+            this.$el.on('endUpdate', selectors.calendar, $.proxy(this.config.onEndChange, this));
+
             $(this.pikaday.el).on('mousedown', $.proxy(this._onMouseDown, this));
 
             return this;
@@ -256,6 +260,9 @@
             this.pikaday.setStartRange(date);
             this.pikaday.setMaxRange(maxDate);
             this.pikaday.config({field: this.config.inputTo});
+            $(this.pikaday.el).trigger('startUpdate', [{
+                start: this.start
+            }]);
         },
 
         setEndRange: function (date) {
@@ -266,6 +273,10 @@
             }
             var input = this.config.lockStartRange?'inputTo':'inputFrom';
             this.pikaday.config({ field: this.config[input] });
+
+            $(this.pikaday.el).trigger('endUpdate', [{
+                end: this.end
+            }]);
 
             $(this.pikaday.el).trigger('rangeUpdate', [{
                 start: this.start,
