@@ -160,6 +160,7 @@
                     if (self.end && self.config.lockStartRange) {
                         if (date > self.start || date.getTime() === self.start.getTime()) {
                             this.setEndRange(date);
+                            self.setEndRange(date);
                         }
                         this.draw();
                         $(this.el).trigger('rangeUpdate', [{
