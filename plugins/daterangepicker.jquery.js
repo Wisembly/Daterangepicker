@@ -35,6 +35,17 @@
     function updateMarkup(options) {
         var outputFrom = $(options.field).append('<input type="hidden" name="'+ options.output.from +'" value="">'),
             outputTo = $(options.field).append('<input type="hidden" name="'+ options.output.to +'" value="">');
+
+        var fct = function (src, dest) {
+            if (src.is(':disabled')) {
+                dest.prop('disabled', true);
+                src.removeAttr('disabled');
+            }
+        }
+
+        fct($(options.inputFrom), $(options.field).find('[name="'+ options.output.from +'"]'));
+        fct($(options.inputTo), $(options.field).find('[name="'+ options.output.to +'"]'));
+
         $(options.inputFrom).removeAttr('name');
         $(options.inputTo).removeAttr('name');
     }
