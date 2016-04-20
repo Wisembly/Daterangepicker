@@ -298,6 +298,8 @@
             if (!this.config.lockStartRange) {
                 this.currentMax = null;
                 this.pikaday.setMaxRange();
+            } else {
+                this.pikaday.setMaxRange(this.currentMax);
             }
 
             this.pikaday.setStartRange();

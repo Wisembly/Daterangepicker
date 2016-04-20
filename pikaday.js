@@ -1026,12 +1026,13 @@
                     isPast =     (opts.minDate && day < opts.minDate)           ||
                                  (opts.maxDate && day > opts.maxDate)           ||
                                  (opts.disableWeekends && isWeekend(day))       ||
-                                 (opts.disabledBeforeToday && day.getTime() < now.getTime()),
+                                 (opts.disabledBeforeToday && day.getTime() < now.getTime()) ||
+                                 (opts.maxRange && day > opts.maxRange),
 
                     isDisabled              = opts.disableDayFn && opts.disableDayFn(day),
                     isDisabledStartRange    = isDisabled && opts.isDisabledStartEndRangeFn && opts.isDisabledStartEndRangeFn(day, 'start'),
                     isDisabledEndRange      = isDisabled && opts.isDisabledStartEndRangeFn && opts.isDisabledStartEndRangeFn(day, 'end'),
-                    isAfterMax              = opts.maxRange   && day > opts.maxRange,
+                    isAfterMax              = !opts.lockStartRange && opts.maxRange   && day > opts.maxRange,
                     isBeforeStartRange      = opts.lockStartRange && opts.startRange && day < opts.startRange,
                     isSelected              = !isBeforeStartRange && !isAfterMax && (isDate(this._d) ? compareDates(day, this._d) : false);
 
