@@ -346,11 +346,21 @@
             }
         },
 
+        formatOutputDate: function (date, type) {
+            var dateMoment = moment(date),
+                dateOutput = this.config.toISOString ? dateMoment.toISOString() : dateMoment.format();
+            if (_.isFunction(this.config.formatOutputDate))
+                dateOutput = this.config.formatOutputDate.call(this, date, type) || dateOutput;
+            return dateOutput;
+        },
+
         _onRangeUpdate: function (ev) {
             var startMoment = moment(this.start),
                 endMoment = moment(this.end);
-            $('[name=' + this.config.output.from + ']').val(this.config.toISOString ? startMoment.toISOString() : startMoment.format());
-            $('[name=' + this.config.output.to + ']').val(this.config.toISOString ? endMoment.toISOString() : endMoment.format());
+            $('[name=' + this.config.output.from + ']').val(this.formatOutputDate(this.start, 'start'));
+            $('[name=' + this.config.output.to + ']').val(this.formatOutputDate(this.end, 'end'));
+            // $('[name=' + this.config.output.from + ']').val(this.config.toISOString ? startMoment.toISOString() : startMoment.format());
+            // $('[name=' + this.config.output.to + ']').val(this.config.toISOString ? endMoment.toISOString() : endMoment.format());
         },
 
         _onInputClick: function(ev) {
