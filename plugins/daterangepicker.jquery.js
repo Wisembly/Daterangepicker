@@ -134,7 +134,8 @@
                 minDate: this.config.minDate,
                 disabledBeforeToday: this.config.disabledBeforeToday,
                 showWeekNumber: this.config.showWeekNumber,
-                lockStartRange: this.config.lockStartRange
+                lockStartRange: this.config.lockStartRange,
+                i18n: this.config.i18n
             }));
 
             this.pikaday.config({
