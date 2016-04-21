@@ -855,7 +855,7 @@
             this._o.minDate = value;
             this._o.minYear  = value.getFullYear();
             this._o.minMonth = value.getMonth();
-            this.draw();
+            // this.draw();
         },
 
         /**
@@ -867,7 +867,7 @@
             this._o.maxDate = value;
             this._o.maxYear = value.getFullYear();
             this._o.maxMonth = value.getMonth();
-            this.draw();
+            // this.draw();
         },
 
         setStartRange: function(value)

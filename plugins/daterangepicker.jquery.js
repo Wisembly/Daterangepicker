@@ -208,6 +208,8 @@
 
             $(this.pikaday.el).on('mousedown', $.proxy(this._onMouseDown, this));
 
+            this.pikaday.draw();
+
             return this;
         },
 
